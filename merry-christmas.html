@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Merry Christmas!</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #7e22ce 100%);
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .container {
+            text-align: center;
+            color: white;
+            z-index: 10;
+        }
+
+        h1 {
+            font-size: 5rem;
+            margin: 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.3);
+            animation: glow 2s ease-in-out infinite;
+            background: linear-gradient(45deg, #fff, #ffd700, #fff);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .tree {
+            font-size: 2rem;
+            line-height: 1.2;
+            margin: 30px 0;
+            color: #22c55e;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3), 0 0 10px rgba(34, 197, 94, 0.5);
+            animation: sway 3s ease-in-out infinite;
+        }
+
+        @keyframes sway {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(2deg); }
+        }
+
+        .star {
+            color: #ffd700;
+            font-size: 3rem;
+            animation: twinkle 1s ease-in-out infinite;
+        }
+
+        .message {
+            font-size: 1.5rem;
+            margin-top: 20px;
+            color: #fef9c3;
+        }
+
+        .ad-container {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            z-index: 1000;
+            min-width: 400px;
+            text-align: center;
+            pointer-events: all;
+            display: none;
+        }
+
+        .ad-container.active {
+            display: block;
+        }
+
+        .ad-content {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            pointer-events: none;
+        }
+
+        .ad-timer {
+            font-size: 2rem;
+            color: #ef4444;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+
+        .ad-progress {
+            background: #e5e7eb;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .ad-progress-bar {
+            background: linear-gradient(90deg, #22c55e, #16a34a);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .claim-section {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .claim-button {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(251,191,36,0.4);
+        }
+
+        .claim-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(251,191,36,0.6);
+        }
+
+        .claim-button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .counter {
+            font-size: 1.3rem;
+            margin: 15px 0;
+            color: #fef9c3;
+        }
+
+        .gift-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+            z-index: 2000;
+            text-align: center;
+            display: none;
+            max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .gift-modal.active {
+            display: block;
+        }
+
+        .gift-modal h2 {
+            color: #22c55e;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .gift-modal p {
+            color: #333;
+            font-size: 1.5rem;
+        }
+
+        .wheel-container {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            margin: 30px auto;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 10px solid #fbbf24;
+            position: relative;
+            transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.5), inset 0 0 20px rgba(0,0,0,0.3);
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .wheel-segment {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 0;
+            left: 50%;
+            transform-origin: 0% 100%;
+            clip-path: polygon(0 0, 100% 0, 0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding-right: 20px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+        }
+
+        .segment-image {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-bottom: 5px;
+            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.5));
+        }
+
+        .segment-text {
+            font-size: 0.8rem;
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .wheel-pointer {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 40px solid #ef4444;
+            z-index: 10;
+            filter: drop-shadow(0 3px 5px rgba(0,0,0,0.3));
+        }
+
+        .music-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .name-input-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 5000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .name-input-box {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .name-input-box h2 {
+            color: #22c55e;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .name-input-box p {
+            color: #333;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .name-input-box input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #22c55e;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .name-input-box input:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        }
+
+        .name-input-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s;
+        }
+
+        .name-input-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+        }
+
+        .name-input-modal.hidden {
+            display: none;
+        }
+
+        .claim-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 6000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .claim-modal.hidden {
+            display: none;
+        }
+
+        .claim-box {
+            background: white;
+            padding: 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 600px;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5);
+        }
+
+        .claim-box h2 {
+            color: #22c55e;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease;
+        }
+
+        .claim-box .prize-display {
+            font-size: 4rem;
+            margin: 30px 0;
+        }
+
+        .claim-box .prize-name {
+            color: #333;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .claim-box p {
+            color: #666;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .claim-box input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: 2px solid #22c55e;
+            border-radius: 10px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        .claim-box input:focus {
+            outline: none;
+            border-color: #16a34a;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.3);
+        }
+
+        .contact-toggle {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .contact-toggle button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: 2px solid #22c55e;
+            background: white;
+            color: #22c55e;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+
+        .contact-toggle button.active {
+            background: #22c55e;
+            color: white;
+        }
+
+        .contact-toggle button:hover {
+            transform: translateY(-2px);
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        .claim-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+        }
+
+        .claim-btn {
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s;
+        }
+
+        .claim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+        }
+
+        .claim-btn.cancel {
+            background: #ef4444;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .claim-btn.cancel:hover {
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        }
+
+        .music-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+        }
+
+        .music-toggle:active {
+            transform: scale(0.95);
+        }
+
+        .music-toggle.playing {
+            animation: pulse-music 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse-music {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .wheel-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3), inset 0 -2px 5px rgba(0,0,0,0.2);
+            z-index: 5;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 3px solid rgba(255,255,255,0.3);
+        }
+
+        .wheel-center:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.4), inset 0 -2px 5px rgba(0,0,0,0.2);
+        }
+
+        .wheel-center:active {
+            transform: translate(-50%, -50%) scale(0.95);
+        }
+
+        .spin-button {
+            margin-top: 30px;
+            padding: 15px 50px;
+            font-size: 1.5rem;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            box-shadow: 0 5px 15px rgba(34, 197, 94, 0.4);
+            transition: all 0.3s;
+        }
+
+        .spin-button:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.6);
+        }
+
+        .spin-button:disabled {
+            background: #6b7280;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .prize-result {
+            margin-top: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #fbbf24, #f59e0b);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .prize-result.show {
+            display: block;
+        }
+
+        .prize-result h3 {
+            color: white;
+            font-size: 2rem;
+            margin: 10px 0;
+            animation: bounce 0.6s ease;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .snowflake {
+            position: fixed;
+            top: -10px;
+            color: white;
+            font-size: 1.5rem;
+            animation: fall linear infinite;
+            opacity: 0.8;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        .falling-text {
+            position: fixed;
+            top: -50px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            animation: fall-text 3s ease-in;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        @keyframes fall-text {
+            0% {
+                opacity: 1;
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(15deg);
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #f00;
+            animation: confetti-fall linear forwards;
+            z-index: 10000;
+        }
+
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .close-btn:hover {
+            background: #dc2626;
+            transform: rotate(90deg);
+        }
+
+        .adblock-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .adblock-overlay.active {
+            display: flex;
+        }
+
+        .adblock-overlay h2 {
+            font-size: 2.5rem;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+
+        .adblock-overlay p {
+            font-size: 1.3rem;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        .adblock-icon {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            animation: shake 0.5s ease-in-out infinite;
+        }
+
+        .disable-button {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .instructions {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            max-width: 500px;
+        }
+
+        .instructions ol {
+            text-align: left;
+            line-height: 2;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+
+            @media (max-width: 768px) {
+                .adblock-overlay h2 {
+                    font-size: 2rem;
+                }
+
+                .adblock-overlay p {
+                    font-size: 1.1rem;
+                }
+
+                .adblock-icon {
+                    font-size: 4rem;
+                }
+            }
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 20px rgba(255,255,255,0.5);
+            }
+            50% {
+                text-shadow: 3px 3px 6px rgba(0,0,0,0.3), 0 0 40px rgba(255,255,255,0.8);
+            }
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.5;
+                transform: scale(1.2);
+            }
+        }
+
+        .lights {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .light {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            animation: blink 1s ease-in-out infinite;
+        }
+
+        .light:nth-child(1) { background: #ef4444; animation-delay: 0s; }
+        .light:nth-child(2) { background: #22c55e; animation-delay: 0.2s; }
+        .light:nth-child(3) { background: #3b82f6; animation-delay: 0.4s; }
+        .light:nth-child(4) { background: #fbbf24; animation-delay: 0.6s; }
+        .light:nth-child(5) { background: #a855f7; animation-delay: 0.8s; }
+
+            .music-toggle {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 1.2rem;
+            }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Mobile Responsive Styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .tree {
+                font-size: 1.5rem;
+            }
+
+            .star {
+                font-size: 2rem;
+            }
+
+            .message {
+                font-size: 1.2rem;
+                padding: 0 20px;
+            }
+
+            .claim-button {
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }
+
+            .claim-section {
+                margin-top: 20px;
+                padding: 15px;
+            }
+
+            .gift-modal {
+                padding: 30px 20px;
+                width: 90%;
+                max-width: 350px;
+            }
+
+            .gift-modal h2 {
+                font-size: 1.8rem;
+            }
+
+            .gift-modal p {
+                font-size: 1.2rem;
+            }
+
+            .wheel-container {
+                width: 300px;
+                height: 300px;
+            }
+
+            .wheel-center {
+                width: 60px;
+                height: 60px;
+                font-size: 1rem;
+            }
+
+            .wheel-segment {
+                font-size: 0.7rem;
+                padding-right: 10px;
+            }
+
+            .spin-button {
+                font-size: 1.2rem;
+                padding: 12px 30px;
+            }
+
+            .prize-result h3 {
+                font-size: 1.5rem;
+            }
+
+            .lights {
+                gap: 8px;
+            }
+
+            .light {
+                width: 15px;
+                height: 15px;
+            }
+
+            .snowflake {
+                font-size: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tree {
+                font-size: 1.2rem;
+            }
+
+            .wheel-container {
+                width: 250px;
+                height: 250px;
+            }
+
+            .wheel-center {
+                width: 50px;
+                height: 50px;
+                font-size: 0.8rem;
+            }
+
+            .wheel-segment {
+                font-size: 0.6rem;
+                padding-right: 5px;
+            }
+
+            .spin-button {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+
+            .prize-result h3 {
+                font-size: 1.2rem;
+            }
+
+            .prize-result p {
+                font-size: 1rem !important;
+            }
+
+            .star {
+                font-size: 1.5rem;
+            }
+
+            .message {
+                font-size: 1rem;
+            }
+
+            .claim-button {
+                font-size: 1rem;
+                padding: 10px 25px;
+            }
+
+            .gift-modal {
+                padding: 25px 15px;
+            }
+
+            .gift-modal h2 {
+                font-size: 1.5rem;
+            }
+
+            .gift-modal p {
+                font-size: 1rem;
+            }
+
+            .lights {
+                gap: 5px;
+            }
+
+            .light {
+                width: 12px;
+                height: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Name Input Modal -->
+    <div class="name-input-modal" id="nameInputModal">
+        <div class="name-input-box">
+            <h2>🎄 Merry Christmas! 🎄</h2>
+            <p>What's your name?</p>
+            <input type="text" id="userName" placeholder="Enter your name..." autocomplete="off">
+            <button class="name-input-btn" id="nameSubmitBtn">Continue</button>
+        </div>
+    </div>
+
+    <!-- Claim Prize Modal -->
+    <div class="claim-modal hidden" id="claimModal">
+        <div class="claim-box">
+            <h2>🎉 CONGRATULATIONS! 🎉</h2>
+            <div class="prize-display">📱</div>
+            <div class="prize-name" id="prizeName2"></div>
+            <p>You won an amazing phone!</p>
+            <p>Enter your contact information to claim your prize:</p>
+            
+            <div class="contact-toggle">
+                <button id="phoneToggle" class="active">📱 Phone Number</button>
+                <button id="emailToggle">📧 Email</button>
+            </div>
+
+            <input type="tel" id="phoneNumber" placeholder="Enter your 10-digit phone number" maxlength="15">
+            <input type="email" id="emailInput" class="hidden-input" placeholder="Enter your email address">
+            <div class="claim-buttons">
+                <button class="claim-btn" id="submitClaimBtn">Claim Prize</button>
+                <button class="claim-btn cancel" id="closeClaimBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Christmas Music - Audio Only -->
+    <audio id="christmasMusic" loop autoplay>
+        <source src="https://www.youtube.com/watch?v=GcvUtNC-V8E" type="audio/mpeg">
+    </audio>
+
+    <!-- Music Toggle Button -->
+    <button class="music-toggle" id="musicToggle" title="Play/Pause Music">🎵</button>
+
+    <!-- Ad Blocker Detection -->
+    <div class="adblock-overlay" id="adblockOverlay">
+        <div class="adblock-icon">🚫</div>
+        <h2>⚠️ Ad Blocker Detected! ⚠️</h2>
+        <p style="font-size: 1.5rem; color: #fbbf24; font-weight: bold;">
+            Please disable your ad blocker to continue
+        </p>
+        <p style="font-size: 1rem; margin-top: 20px; color: #9ca3af;">
+            The page will automatically refresh once ad blocker is disabled
+        </p>
+        
+        <div class="instructions">
+            <p style="font-size: 1.1rem; margin-bottom: 15px;">Quick Steps:</p>
+            <ol style="font-size: 0.95rem;">
+                <li>Click on your ad blocker extension icon</li>
+                <li>Select "Disable on this site" or "Pause"</li>
+                <li>Page will auto-reload automatically</li>
+            </ol>
+        </div>
+
+        <button class="disable-button" onclick="location.reload()">
+            ↻ I've Disabled It - Reload Now
+        </button>
+    </div>
+
+    <!-- Bait element for ad blocker detection -->
+    <div class="ad ads advertisement" style="position: absolute; top: -1px; left: -1px; width: 1px; height: 1px;"></div>
+
+    <div class="container">
+        <h1>🎄 Merry Christmas! 🎄</h1>
+        
+        <div class="tree">
+            <div class="star">⭐</div>
+            <div>🎄</div>
+            <div>🎁🎁🎁</div>
+        </div>
+
+        <div class="message">
+            Wishing you joy, peace, and happiness!
+        </div>
+
+        <div class="lights">
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+            <div class="light"></div>
+        </div>
+
+        <div class="claim-section">
+            <button class="claim-button" id="claimBtn">
+                🎁 Claim Your Gift 🎁
+            </button>
+        </div>
+    </div>
+
+    <div class="gift-modal" id="giftModal">
+        <button class="close-btn" id="closeBtn">✕</button>
+        <h2>🎉 Spin the Wheel! 🎉</h2>
+        <p style="color: #333;">Spin to win your Christmas prize!</p>
+        
+        <div class="wheel-container">
+            <div class="wheel-pointer"></div>
+            <div class="wheel" id="wheel">
+                <!-- Wheel segments will be generated by JavaScript -->
+            </div>
+            <div class="wheel-center" id="spinBtn">SPIN</div>
+        </div>
+
+        <button class="spin-button" id="spinButton">
+            🎁 SPIN THE WHEEL 🎁
+        </button>
+
+        <div class="prize-result" id="prizeResult">
+            <h3>🎊 YOU WON! 🎊</h3>
+            <p id="prizeName" style="font-size: 2.5rem; margin: 20px 0;"></p>
+            <p style="color: white; font-size: 1.2rem;">Congratulations! Merry Christmas! 🎄</p>
+        </div>
+    </div>
+
+    <script>
+        // Ad Blocker Detection with Auto-Check
+        let adBlockDetected = false;
+
+        function detectAdBlocker() {
+            const adBait = document.querySelector('.ad.ads.advertisement');
+            const adblockOverlay = document.getElementById('adblockOverlay');
+            
+            // Check if the bait element is hidden by ad blocker
+            if (adBait) {
+                const baitStyles = window.getComputedStyle(adBait);
+                if (baitStyles.display === 'none' || 
+                    baitStyles.visibility === 'hidden' || 
+                    adBait.offsetHeight === 0) {
+                    // Ad blocker detected
+                    if (!adBlockDetected) {
+                        adBlockDetected = true;
+                        adblockOverlay.classList.add('active');
+                    }
+                    return true;
+                } else {
+                    // Ad blocker disabled
+                    if (adBlockDetected) {
+                        // Auto-reload when ad blocker is disabled
+                        location.reload();
+                    }
+                    adblockOverlay.classList.remove('active');
+                    return false;
+                }
+            }
+            return false;
+        }
+
+        // Check for ad blocker on page load
+        window.addEventListener('load', () => {
+            setTimeout(detectAdBlocker, 100);
+            
+            // Continuously check every 2 seconds if ad blocker is disabled
+            setInterval(detectAdBlocker, 2000);
+        });
+
+        // Prize Wheel System
+        const prizes = [
+            { name: 'iPhone 16 Pro Max', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="5" y="5" width="90" height="90" fill="%23555" rx="5"/><circle cx="50" cy="10" r="2" fill="%23999"/></svg>', color: '#3b82f6' },
+            { name: 'Samsung S25 Ultra', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23111" rx="5"/><rect x="3" y="3" width="94" height="94" fill="%231a1a1a" rx="5"/><circle cx="50" cy="8" r="2" fill="%23888"/></svg>', color: '#ef4444' },
+            { name: 'Google Pixel 9 Pro', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="5" y="5" width="90" height="90" fill="%23222" rx="5"/><circle cx="50" cy="10" r="3" fill="%23fff"/></svg>', color: '#22c55e' },
+            { name: 'OnePlus 12 Pro', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="4" y="4" width="92" height="92" fill="%23444" rx="5"/><circle cx="50" cy="10" r="2.5" fill="%23999"/></svg>', color: '#a855f7' },
+            { name: 'Xiaomi 14 Ultra', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="5" y="5" width="90" height="90" fill="%23666" rx="5"/><circle cx="50" cy="10" r="2" fill="%23aaa"/></svg>', color: '#f59e0b' },
+            { name: 'iPhone 15 Pro', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="5" y="5" width="90" height="90" fill="%23333" rx="5"/><circle cx="50" cy="10" r="2" fill="%23777"/></svg>', color: '#ec4899' },
+            { name: 'Samsung S24 Ultra', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="3" y="3" width="94" height="94" fill="%23222" rx="5"/><circle cx="50" cy="8" r="2" fill="%23888"/></svg>', color: '#06b6d4' },
+            { name: 'Nothing Phone 2', emoji: '📱', image: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="%23000" rx="5"/><rect x="5" y="5" width="90" height="90" fill="%23444" rx="5"/><circle cx="50" cy="10" r="2" fill="%23999"/></svg>', color: '#8b5cf6' }
+        ];
+
+        const wheel = document.getElementById('wheel');
+        const spinButton = document.getElementById('spinButton');
+        const spinBtn = document.getElementById('spinBtn');
+        const prizeResult = document.getElementById('prizeResult');
+        const prizeName = document.getElementById('prizeName');
+        const claimBtn = document.getElementById('claimBtn');
+        const giftModal = document.getElementById('giftModal');
+        const closeBtn = document.getElementById('closeBtn');
+
+        let isSpinning = false;
+        let currentRotation = 0;
+
+        // Close button
+        closeBtn.addEventListener('click', () => {
+            giftModal.classList.remove('active');
+        });
+
+        // Create wheel segments
+        const segmentAngle = 360 / prizes.length;
+        prizes.forEach((prize, index) => {
+            const segment = document.createElement('div');
+            segment.className = 'wheel-segment';
+            segment.style.background = prize.color;
+            segment.style.transform = `rotate(${segmentAngle * index}deg)`;
+            
+            // Create segment content with image and text
+            const img = document.createElement('img');
+            img.className = 'segment-image';
+            img.src = prize.image;
+            img.alt = prize.name;
+            
+            const text = document.createElement('div');
+            text.className = 'segment-text';
+            text.textContent = prize.name;
+            text.style.transform = `rotate(-${segmentAngle * index}deg)`;
+            
+            const container = document.createElement('div');
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.alignItems = 'center';
+            container.style.transform = `rotate(-45deg)`;
+            
+            container.appendChild(img);
+            container.appendChild(text);
+            segment.appendChild(container);
+            wheel.appendChild(segment);
+        });
+
+        // Spin function
+        function spinWheel() {
+            if (isSpinning) return;
+            
+            isSpinning = true;
+            spinButton.disabled = true;
+            prizeResult.classList.remove('show');
+
+            // Random prize
+            const randomIndex = Math.floor(Math.random() * prizes.length);
+            const targetAngle = (360 * 5) + (360 - (segmentAngle * randomIndex) - (segmentAngle / 2));
+            
+            currentRotation += targetAngle;
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                spinButton.disabled = false;
+                prizeName.textContent = prizes[randomIndex].name;
+                prizeResult.classList.add('show');
+                createConfetti();
+                createFallingCongrats();
+                
+                // Show claim modal after 2 seconds
+                setTimeout(() => {
+                    showClaimModal(prizes[randomIndex]);
+                }, 2000);
+            }, 4000);
+        }
+
+        // Event listeners
+        spinButton.addEventListener('click', spinWheel);
+        spinBtn.addEventListener('click', spinWheel);
+
+        // Claim Prize Modal
+        const claimModal = document.getElementById('claimModal');
+        const prizeName2 = document.getElementById('prizeName2');
+        const phoneNumberInput = document.getElementById('phoneNumber');
+        const emailInput = document.getElementById('emailInput');
+        const phoneToggle = document.getElementById('phoneToggle');
+        const emailToggle = document.getElementById('emailToggle');
+        const submitClaimBtn = document.getElementById('submitClaimBtn');
+        const closeClaimBtn = document.getElementById('closeClaimBtn');
+        let contactType = 'phone'; // 'phone' or 'email'
+
+        // Toggle between phone and email
+        phoneToggle.addEventListener('click', () => {
+            contactType = 'phone';
+            phoneToggle.classList.add('active');
+            emailToggle.classList.remove('active');
+            phoneNumberInput.classList.remove('hidden-input');
+            emailInput.classList.add('hidden-input');
+            phoneNumberInput.focus();
+        });
+
+        emailToggle.addEventListener('click', () => {
+            contactType = 'email';
+            emailToggle.classList.add('active');
+            phoneToggle.classList.remove('active');
+            emailInput.classList.remove('hidden-input');
+            phoneNumberInput.classList.add('hidden-input');
+            emailInput.focus();
+        });
+
+        function showClaimModal(prize) {
+            prizeName2.textContent = prize.name;
+            claimModal.classList.remove('hidden');
+            contactType = 'phone';
+            phoneToggle.classList.add('active');
+            emailToggle.classList.remove('active');
+            phoneNumberInput.classList.remove('hidden-input');
+            emailInput.classList.add('hidden-input');
+            phoneNumberInput.focus();
+            phoneNumberInput.value = '';
+            emailInput.value = '';
+            
+            // Text-to-speech for congratulation
+            const message = `Congratulations ${userName}! You won a ${prize.name}. Please enter your phone number or email to claim your prize.`;
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                utterance.lang = 'en-US';
+                speechSynthesis.speak(utterance);
+            }
+        }
+
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        submitClaimBtn.addEventListener('click', () => {
+            let contact = '';
+            
+            if (contactType === 'phone') {
+                contact = phoneNumberInput.value.trim();
+                if (contact === '') {
+                    alert('Please enter your phone number!');
+                    return;
+                }
+                if (contact.length < 10) {
+                    alert('Please enter a valid phone number (at least 10 digits)!');
+                    return;
+                }
+            } else {
+                contact = emailInput.value.trim();
+                if (contact === '') {
+                    alert('Please enter your email address!');
+                    return;
+                }
+                if (!validateEmail(contact)) {
+                    alert('Please enter a valid email address!');
+                    return;
+                }
+            }
+            
+            // Prepare message
+            const contactMethod = contactType === 'phone' ? `phone ${contact}` : `email ${contact}`;
+            const successMsg = `Thank you ${userName}! You have successfully claimed your ${prizeName2.textContent}. We will send a confirmation message to your ${contactMethod}. Thank you for visiting our website!`;
+            
+            // Show confirmation
+            alert(successMsg);
+            
+            // Text-to-speech confirmation
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(successMsg);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                utterance.lang = 'en-US';
+                speechSynthesis.speak(utterance);
+            }
+            
+            // Simulate sending message (in real scenario, this would be sent to backend)
+            console.log(`Message would be sent to ${contactType}: ${contact}`);
+            console.log(`Message: "You have got ${prizeName2.textContent}! Thank you for visiting our website!"`);
+            
+            claimModal.classList.add('hidden');
+            phoneNumberInput.value = '';
+            emailInput.value = '';
+        });
+
+        closeClaimBtn.addEventListener('click', () => {
+            claimModal.classList.add('hidden');
+            phoneNumberInput.value = '';
+            emailInput.value = '';
+        });
+
+        phoneNumberInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && contactType === 'phone') {
+                submitClaimBtn.click();
+            }
+        });
+
+        emailInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && contactType === 'email') {
+                submitClaimBtn.click();
+            }
+        });
+
+        claimBtn.addEventListener('click', () => {
+            giftModal.classList.add('active');
+        });
+
+        // Name Input and Text-to-Speech
+        const nameInputModal = document.getElementById('nameInputModal');
+        const userNameInput = document.getElementById('userName');
+        const nameSubmitBtn = document.getElementById('nameSubmitBtn');
+        let userName = '';
+
+        // Focus on input when modal opens
+        window.addEventListener('load', () => {
+            userNameInput.focus();
+        });
+
+        nameSubmitBtn.addEventListener('click', submitName);
+        userNameInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                submitName();
+            }
+        });
+
+        function submitName() {
+            userName = userNameInput.value.trim();
+            if (userName === '') {
+                alert('Please enter your name!');
+                return;
+            }
+            nameInputModal.classList.add('hidden');
+            playPersonalizedGreeting();
+        }
+
+        function playPersonalizedGreeting() {
+            const message = `Merry Christmas ${userName}! Welcome to our Christmas celebration.`;
+            
+            // Use Web Speech API (Text-to-Speech)
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(message);
+                utterance.rate = 0.9;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                utterance.lang = 'en-US';
+                
+                speechSynthesis.speak(utterance);
+            } else {
+                console.log('Text-to-Speech not supported');
+            }
+        }
+
+        // Music Toggle
+        const audio = document.getElementById('christmasMusic');
+        const musicToggle = document.getElementById('musicToggle');
+        let isPlaying = true;
+
+        // Auto-play on page load
+        window.addEventListener('load', () => {
+            audio.play().catch(err => {
+                console.log('Autoplay prevented by browser - click button to play');
+                isPlaying = false;
+                musicToggle.textContent = '🔇';
+                musicToggle.classList.remove('playing');
+            });
+        });
+
+        musicToggle.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                isPlaying = false;
+                musicToggle.classList.remove('playing');
+                musicToggle.textContent = '🔇';
+            } else {
+                audio.play().catch(err => console.log('Music autoplay prevented'));
+                isPlaying = true;
+                musicToggle.classList.add('playing');
+                musicToggle.textContent = '🎵';
+            }
+        });
+
+        // Set initial state
+        musicToggle.classList.add('playing');
+        musicToggle.textContent = '🎵';
+
+        // Create falling snow
+        function createSnowflake() {
+            const snowflake = document.createElement('div');
+            snowflake.classList.add('snowflake');
+            snowflake.innerHTML = '❄';
+            snowflake.style.left = Math.random() * 100 + 'vw';
+            snowflake.style.animationDuration = Math.random() * 3 + 3 + 's';
+            snowflake.style.opacity = Math.random() * 0.7 + 0.3;
+            snowflake.style.fontSize = Math.random() * 1.5 + 1 + 'rem';
+            document.body.appendChild(snowflake);
+
+            setTimeout(() => {
+                snowflake.remove();
+            }, 6500);
+        }
+
+        // Start continuous snowfall
+        window.addEventListener('load', () => {
+            setInterval(createSnowflake, 300);
+        });
+
+        // Falling congratulation messages
+        function createFallingCongrats() {
+            const messages = ['🎉 CONGRATULATIONS! 🎉', '🎁 YOU WON! 🎁', '⭐ AMAZING! ⭐', '🌟 FANTASTIC! 🌟', '🎊 WONDERFUL! 🎊'];
+            const messageCount = 8;
+            
+            for (let i = 0; i < messageCount; i++) {
+                setTimeout(() => {
+                    const msg = document.createElement('div');
+                    msg.className = 'falling-text';
+                    msg.textContent = messages[Math.floor(Math.random() * messages.length)];
+                    msg.style.left = Math.random() * 90 + '%';
+                    msg.style.color = ['#ef4444', '#3b82f6', '#22c55e', '#fbbf24', '#a855f7', '#ec4899'][Math.floor(Math.random() * 6)];
+                    msg.style.textShadow = '2px 2px 4px rgba(0,0,0,0.5)';
+                    document.body.appendChild(msg);
+                    
+                    setTimeout(() => msg.remove(), 3000);
+                }, i * 200);
+            }
+        }
+
+        // Confetti effect
+        function createConfetti() {
+            const colors = ['#ef4444', '#3b82f6', '#22c55e', '#fbbf24', '#a855f7', '#ec4899'];
+            const confettiCount = 50;
+            
+            for (let i = 0; i < confettiCount; i++) {
+                setTimeout(() => {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + '%';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                    confetti.style.opacity = Math.random();
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 4000);
+                }, i * 30);
+            }
+        }
+    </script>
+</body>
+</html>
