@@ -4,7 +4,7 @@ A festive Christmas website with animations and decorations.
 
 ## 🌐 View Online
 
-Visit the live website: **https://sankalpapoudel-dotcom.github.io/Merry-Christmas/**
+Visit the live website: **https:// you can claim your gift /Merry-Christmas/**
 
 ## 📁 Files
 
